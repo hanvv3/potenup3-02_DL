@@ -20,6 +20,7 @@ dependencies = [
     "fastapi>=0.133.0",
     "uvicorn>=0.41.0",
     "uuid>=1.30",
+    "python-multipart>=0.0.22",
 ]
 
 [tool.uv.sources]

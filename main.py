@@ -11,13 +11,14 @@ import os, shutil
 
 app = FastAPI()     # server가 만들어짐..
 
+
 @app.get('/')
 def root():
     return {
         "message": "Hi!!"
     }
 
-@app.get('/infer')
+@app.post('/infer')
 def infer(file:UploadFile = File(...)):     # body: form-data
     
     allowed_ext = ["jpg", "jpeg", "png", "bmp", "webp"]
@@ -25,9 +26,9 @@ def infer(file:UploadFile = File(...)):     # body: form-data
     ext = file.filename.split(".")[-1].lower()
     
     if ext not in allowed_ext:
-        return {"error": "이미지 파일이 아닙니다!"}
+        return {"error": "이미지 파일이 아닙니다! 이미지 파일을 올려주세요."}
     
-    # 무조건 데이터는 저장해야 한다. MLops
+    # 무조건 데이터는 저장해야 한다. MLops관점에서: 평가 및 재학습
     # 이미지를 uuid로 고유한 이름으로 변경한 뒤 서버가 아닌 클라우드에 저장해야함
     newfile_name = f"{uuid.uuid4()}.{ext}"
     
@@ -42,6 +43,6 @@ def infer(file:UploadFile = File(...)):     # body: form-data
 
     return {
         "result" : "카리나",
-        "index" : "2"
+        "index" : "2",
+        "filename": newfile_name
     }
-    
