@@ -15,7 +15,6 @@ wheels/
 *.ckpt
 
 # common dirs
-data/
 models/
 checkpoints/
 runs/

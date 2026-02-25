@@ -1,6 +1,47 @@
-def main():
-    print("Hello from 02-deep-learning!")
+from fastapi import FastAPI, UploadFile, File, HTTPException
+
+import torch
+import torch.nn as nn
+import torchvision.transforms as T
+import torchvision.models as models
+import json
+import uuid
+import os, shutil
 
 
-if __name__ == "__main__":
-    main()
+app = FastAPI()     # server가 만들어짐..
+
+@app.get('/')
+def root():
+    return {
+        "message": "Hi!!"
+    }
+
+@app.get('/infer')
+def infer(file:UploadFile = File(...)):     # body: form-data
+    
+    allowed_ext = ["jpg", "jpeg", "png", "bmp", "webp"]
+    
+    ext = file.filename.split(".")[-1].lower()
+    
+    if ext not in allowed_ext:
+        return {"error": "이미지 파일이 아닙니다!"}
+    
+    # 무조건 데이터는 저장해야 한다. MLops
+    # 이미지를 uuid로 고유한 이름으로 변경한 뒤 서버가 아닌 클라우드에 저장해야함
+    newfile_name = f"{uuid.uuid4()}.{ext}"
+    
+    file_path = os.path.join("upload_img", newfile_name)
+    
+    with open(file_path, mode="wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)    # file.file은 파일obj, buffer는 새로운 파일obj
+
+    
+    #------------------------추론코드-----------------------------
+    
+
+    return {
+        "result" : "카리나",
+        "index" : "2"
+    }
+    
