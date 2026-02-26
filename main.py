@@ -23,6 +23,9 @@ def infer(file:UploadFile = File(...)):     # body: form-data
     
     allowed_ext = ["jpg", "jpeg", "png", "bmp", "webp"]
     
+    if not file.filename:
+        return {"error": "파일명이 없습니다!"}
+    
     ext = file.filename.split(".")[-1].lower()
     
     if ext not in allowed_ext:
