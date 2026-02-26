@@ -13,18 +13,18 @@ app = FastAPI()     # server가 만들어짐..
 
 
 @app.get('/')
-def root():
+def root1():
     return {
         "message": "Hi!!"
     }
 
 @app.post('/infer')
-def infer(file:UploadFile = File(...)):     # body: form-data
+def infer2(file:UploadFile = File(...)):     # body: form-data
     
     allowed_ext = ["jpg", "jpeg", "png", "bmp", "webp"]
     
     if not file.filename:
-        return {"error": "파일명이 없습니다!"}
+        return {"error": "파일명이 없습니다."}
     
     ext = file.filename.split(".")[-1].lower()
     
