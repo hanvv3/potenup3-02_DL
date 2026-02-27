@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Depends
 from contextlib import asynccontextmanager
 
 import torch
@@ -6,9 +6,15 @@ import torch.nn as nn
 import torchvision.transforms as T
 import torchvision.models as models
 import os, shutil, io, json, uuid
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
+# -----------------------
+# 설정
+# -----------------------
+UPLOAD_DIR = "upload_img"
+ALLOWED_EXTS = {"jpg", "jpeg", "png", "bmp", "webp"}
 
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 transform_test = T.Compose(
@@ -18,7 +24,6 @@ transform_test = T.Compose(
         T.Normalize([0.485, 0.456, 0.406],[0.229, 0.224, 0.225])
     ]
 )
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -58,7 +63,7 @@ def root():
 
 @app.post("/infer")
 # async는 비동기 처리
-async def infer(file:UploadFile = File(...)):                   # body: form-data
+async def infer(req:Request, file:UploadFile = File(...)):                   # body: form-data
     
     allowed_exts = ["jpg", "jpeg", "png", "bmp", "webp"]
     
